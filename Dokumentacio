@@ -9,6 +9,7 @@ képes:
 2. Ellenőrizni az eszköz elérhetőségét.
 3. Portszkenneléssel (Port Scanning) feltérképezni a futó szolgáltatásokat.
 4. Biztonsági kockázatelemzést végezni a nyitott portok alapján.
+
 A projekt költséghatékony megvalósítása érdekében a drága célhardvereket egy Android
 okostelefonnal szimuláltuk, amelyen egy webszerver futtatásával modelleztük egy
 sebezhető IoT eszköz viselkedését.
