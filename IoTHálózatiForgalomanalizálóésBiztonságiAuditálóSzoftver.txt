@@ -18,16 +18,14 @@ public class IoTTrafficAnalyzer {
         System.out.println("      IoT Forgalomanalizáló & Portszkenner");
         System.out.println("==========================================");
 
-        // 1. IP cím bekérése
         System.out.print("Add meg a célpont (pl. telefonod) IP címét: ");
         String ip = scanner.nextLine();
 
         try {
             InetAddress address = InetAddress.getByName(ip);
 
-            // 2. Elérhetőség vizsgálata (Ping)
             System.out.println("\n[1] Eszköz elérhetőségének ellenőrzése...");
-            boolean reachable = address.isReachable(2000); // 2 mp timeout
+            boolean reachable = address.isReachable(2000);
 
             if (!reachable) {
                 System.out.println("⚠ Az eszköz nem válaszol (lehet, hogy tűzfal blokkolja, vagy rossz az IP).");
@@ -36,30 +34,24 @@ public class IoTTrafficAnalyzer {
             }
             System.out.println("✓ Az eszköz elérhető a hálózaton.");
 
-            // 3. Portok vizsgálata
-            // A telefonok gyakran a 8080-as vagy 8000-es portot használják, nem a 80-at.
             int[] portsToCheck = {21, 22, 23, 53, 80, 443, 554, 8000, 8080, 8443};
             List<Integer> openPorts = new ArrayList<>();
 
             System.out.println("\n[2] Kritikus portok vizsgálata...");
 
             for (int port : portsToCheck) {
-                System.out.print("."); // Betöltés jelző pontok
+                System.out.print(".");
                 try {
                     Socket socket = new Socket();
-                    // 200 ms timeout: Ha ennyi idő alatt nem válaszol, lépünk tovább (GYORSÍTÁS)
                     socket.connect(new InetSocketAddress(ip, port), 200);
 
-                    // Ha nem dobott hibát, a port nyitva van:
                     openPorts.add(port);
                     socket.close();
                 } catch (IOException ignored) {
-                    // A port zárva van, vagy timeout
                 }
             }
-            System.out.println(); // Sortörés a pontok után
+            System.out.println();
 
-            // Eredmények kiírása
             if (openPorts.isEmpty()) {
                 System.out.println("\nNincs nyitott port a vizsgált listán. (Biztonságos, vagy blokkolva van).");
             } else {
@@ -69,7 +61,6 @@ public class IoTTrafficAnalyzer {
                 }
             }
 
-            // 4. Biztonsági Audit / Elemzés
             System.out.println("\n[3] Biztonsági értékelés és jelentés...");
 
             if (openPorts.contains(23)) {
@@ -85,7 +76,6 @@ public class IoTTrafficAnalyzer {
                 System.out.println(" [INFO] Port 554 (RTSP): Kamera stream. Gyakori IoT célpont.");
             }
 
-            // Ez a rész kifejezetten a telefonos teszthez:
             if (openPorts.contains(8080) || openPorts.contains(8000)) {
                 System.out.println(" [INFO] Port 8080/8000: Alternatív webszerver.");
                 System.out.println("        -> Ez valószínűleg a tesztelésre használt telefonod webszervere.");
@@ -99,4 +89,5 @@ public class IoTTrafficAnalyzer {
             System.out.println("Hiba történt a futtatás során: " + e.getMessage());
         }
     }
+
 }
